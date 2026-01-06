@@ -19,7 +19,7 @@ end
 % Generate i/o dir paths
 inPath = '/discover/nobackup/projects/coressd/Blender/Inputs';
 fDir_i = [inPath '/' yearPath '/'];
-fDir_o = '/discover/nobackup/projects/coressd/Process/aux_data/MeanSCF/';
+fDir_o = '/discover/nobackup/projects/coressd/csd_dev/aux_data/MeanSCF/';
 
 % Generate i/o file paths
 inFile =    [fDir_i 'SCF.nc'];
