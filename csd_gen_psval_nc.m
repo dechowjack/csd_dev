@@ -18,9 +18,9 @@ catch
 end
 
 % Generate i/o dir paths
-xyPath = './discover/nobackup/projects/coressd/Blender/Inputs';
-inPath = './discover/nobackup/projects/coressd/Process/aux_data/MeanSCF';
-outPath = './discover/nobackup/projects/coressd/PrecipScalarFiles';
+xyPath = '/discover/nobackup/projects/coressd/Blender/Inputs';
+inPath = '/discover/nobackup/projects/coressd/Process/aux_data/MeanSCF';
+outPath = '/discover/nobackup/projects/coressd/PrecipScalarFiles';
 fDir_xy = [xyPath '/' yearPath '/'];
 fDir_i = [inPath '/'];
 fDir_o = [outPath '/' yearPath '/'];

@@ -26,8 +26,8 @@ run('csd_gen_psval_nc.m')
 
 %% 3 Run Gauss smoother
 
-inPath = './discover/nobackup/projects/coressd/Blender/Inputs';
-outPath = './discover/nobackup/projects/coressd/Blender/SmoothedInputs';
+inPath = '/discover/nobackup/projects/coressd/Blender/Inputs';
+outPath = '/discover/nobackup/projects/coressd/Blender/SmoothedInputs';
 sigma_pixels = 0.5;
 
 % 3.1 Snowf
