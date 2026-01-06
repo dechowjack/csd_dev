@@ -39,11 +39,11 @@ outFile =   [fDir_o 'precip_scalar.nc'];
 
 % Read DEM
 DEM_file = './aux_data/MODDEM1KM_fixed.tif';
-[tmpDEM,~] = geotiffread(DEM_file);
+[tmpDEM,~] = readgeoraster(DEM_file);
 DEM = flip(tmpDEM); clear tmpDEM;
 
 % Read SCF
-avgSCF = flip(geotiffread(inFile));
+avgSCF = flip(readgeoraster(inFile));
 
 %% 3. Read target grid
 [targetGrid.lat, targetGrid.lon, targetGrid.latName, targetGrid.lonName] = readLatLonStrict(xyFile);
