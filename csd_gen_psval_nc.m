@@ -22,7 +22,7 @@ end
 
 % Generate i/o dir paths
 xyPath = '/discover/nobackup/projects/coressd/Blender/Inputs';
-inPath = '/discover/nobackup/projects/coressd/Process/aux_data/MeanSCF';
+inPath = '/discover/nobackup/projects/coressd/csd_dev/aux_data/MeanSCF';
 outPath = '/discover/nobackup/projects/coressd/PrecipScalarFiles';
 
 
