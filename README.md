@@ -27,7 +27,7 @@ All scripts that do something specific have specific names, and in theory can be
 
 1. `cd /discover/nobackup/projects/coressd/csd_dev`
 2. Run `matlab` to start MATLAB command line instance on `discover`
-3. In MATLAB cmd line: `run(csd_main.m)`
+3. In MATLAB cmd line: `run('csd_main.m')`
 4. MATLAB should prompt you to enter the 4 digit WY code
 5. In MATLAB cmd line: `2016` + return
 6. At this point `csd_main.m` should run through the four scripts:

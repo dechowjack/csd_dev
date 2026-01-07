@@ -29,8 +29,8 @@ function [outMap] = drads_main_csd(avgSCF_data,DEM_data,x,y)
     % limited. Was forced to do the mapping toolbox based stuff offline and
     % upload final structures as .mat files instead. Functionality is the
     % same, however. 
-    sNameUS = '/Users/jldechow/Documents/Projects/UNC/aux_data/US_HUC8.mat';
-    sNameCA = '/Users/jldechow/Documents/Projects/UNC/aux_data/CA_HUC8.mat';
+    sNameUS = '/discover/nobackup/projects/coressd/csd_dev/aux_data/US_HUC8.mat';
+    sNameCA = '/discover/nobackup/projects/coressd/csd_dev/aux_data/CA_HUC8.mat';
 
     % Set scaling parameters
     fmin = 0.5;
