@@ -19,83 +19,24 @@ function scaleMap = drads_basin_csd(SCFdata,DEM,fmin,fmax,gamma,xs,ys,shapePath)
     thresh = 0; 
     %% Read watershed data
     % xs and ys are vectors containing the lon/lat data from the tiff files
-    s = shaperead(shapePath);
-    info = shapeinfo(shapePath);
-    p1 = info.CoordinateReferenceSystem;
-    fn = fieldnames(p1);
-    
-   
-    % Filter Hawaii PR etc - Extract SCF Corners
-    minLat = min(ys(:)); maxLat = max(ys(:));
-    minLon = min(xs(:)); maxLon = max(xs(:));
-    
-    % Extract Bounding Box from Shapefile
-    BB = reshape([s.BoundingBox], 2, 2, []);   % -> 2x2xN
-    minLon_f = squeeze(BB(1,1,:)); minLat_f = squeeze(BB(1,2,:));
-    maxLon_f = squeeze(BB(2,1,:)); maxLat_f = squeeze(BB(2,2,:)); 
 
-    % Check if shapefile is projected or not
-    if ismember("LengthUnit", fn)
-        [tmpMinLat,tmpMinLon] = projinv(p1, minLon_f, minLat_f);
-        [tmpMaxLat,tmpMaxLon] = projinv(p1, maxLon_f, maxLat_f);
-
-        clear minLon_f; clear minLat_f; 
-        clear maxLon_f; clear maxLat_f;
-        
-        minLon_f = tmpMinLon; clear tmpMinLon;
-        minLat_f = tmpMinLat; clear tmpMinLat;
-        maxLon_f = tmpMaxLon; clear tmpMaxLon;
-        maxLat_f = tmpMaxLat; clear tmpMaxLat;
-
-    end
-    % Get mask
-
-    fullyInside = (minLon_f >= minLon & maxLon_f <= maxLon & ...
-               minLat_f >= minLat & maxLat_f <= maxLat);
-
-    mask = fullyInside;            % or centroidInside, or fullyInside
-
-    lon_c = 0.5*(minLon_f + maxLon_f);
-    lat_c = 0.5*(minLat_f + maxLat_f);
-    centroidInside = (lon_c >= minLon & lon_c <= maxLon & ...
-                  lat_c >= minLat & lat_c <= maxLat);
-
-    mask = centroidInside;   
-    tmp = s(mask); 
-    clear s; s = tmp; clear tmp;
-    
-    sLL = struct();
-
-    for i = 1 : numel(s)
-        if ismember("LengthUnit", fn)
-            x = s(i).X; y = s(i).Y;
-            [sLL(i).Lat, sLL(i).Lon] = projinv(p1, x, y);
-        else
-            sLL(i).Lat =  s(i).Y ;
-            sLL(i).Lon =  s(i).X ;
-        end
-    end
-
-    clear minX; clear maxX; clear minY; clear maxY; clear BB;
-    clear minLon_f; clear maxLon_f; clear minLat_f; clear maxLat_f;
-    clear fullyInside; clear mask; %clear s;
-
+    load(shapePath);
     %% Algorithm 
 
     %% Build a geographic raster reference object R
-nCols = numel(xs);
-nRows = numel(ys);
-
-latlim = [min(ys) max(ys)];
-lonlim = [min(xs) max(xs)];
-R = georefpostings(latlim, lonlim, [nRows nCols]);
-
-% Confirm your data matches
-assert(all(size(SCFdata)==[nRows nCols]), 'data size mismatch with xs/ys');
-
-% Prepare output
-out = nan(nRows, nCols, 'single');
-isScale = nan(numel(sLL),1);
+    nCols = numel(xs);
+    nRows = numel(ys);
+    
+    latlim = [min(ys) max(ys)];
+    lonlim = [min(xs) max(xs)];
+    
+    
+    % Confirm your data matches
+    assert(all(size(SCFdata)==[nRows nCols]), 'data size mismatch with xs/ys');
+    
+    % Prepare output
+    out = nan(nRows, nCols, 'single');
+    isScale = nan(numel(sLL),1);
 %% Loop polygons (fixed bbox per polygon + robust guards)
 for ii = 1:numel(sLL)
     latv = sLL(ii).Lat(:);
@@ -121,7 +62,8 @@ for ii = 1:numel(sLL)
         if i2 < i1 || (i2 - i1 + 1) < 3, continue; end
 
         % Geographic -> intrinsic (columns=xI, rows=yI)
-        [xI, yI] = geographicToIntrinsic(R, latv(i1:i2), lonv(i1:i2));
+        [xI, yI] = latlon_to_intrinsic(xs, ys, lonv(i1:i2), latv(i1:i2));
+
 
         % ---------------- Guard 1: flat & wide ----------------
         h = max(yI) - min(yI);
@@ -246,4 +188,45 @@ end
 
 scaleMap = out;
 
+end
+
+
+function [xI, yI] = latlon_to_intrinsic(xs, ys, lon, lat)
+% xs: 1xnCols longitudes at pixel centers (increasing)
+% ys: 1xnRows latitudes at pixel centers (may increase or decrease)
+% lon, lat: vectors of polygon vertices (same size)
+% Returns intrinsic coords where xI=column, yI=row (1-based), matching poly2mask use
+% Was forced to add this to get around issues with discover matlab mapping
+% toolbox licenses
+% 7 Jan 2026
+
+xs = double(xs(:).');   % row
+ys = double(ys(:).');   % row
+lon = double(lon(:));
+lat = double(lat(:));
+
+nCols = numel(xs);
+nRows = numel(ys);
+
+% Assume approximately uniform spacing
+dlon = median(diff(xs));
+
+% Handle ys direction
+dlat = median(diff(ys));
+ys0  = ys(1);
+
+if dlat > 0
+    % south -> north as row increases (uncommon for rasters, but possible)
+    yI = 1 + (lat - ys0) / dlat;
+else
+    % north -> south as row increases (common raster convention)
+    dlat = abs(dlat);
+    yI = 1 + (ys0 - lat) / dlat;
+end
+
+xI = 1 + (lon - xs(1)) / dlon;
+
+% optional: clamp a bit to avoid extreme out-of-range numerics
+xI = min(max(xI, 0.5), nCols + 0.5);
+yI = min(max(yI, 0.5), nRows + 0.5);
 end

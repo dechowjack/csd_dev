@@ -1,4 +1,4 @@
-%% CoReSSD Precip Scalar Script'
+%% CoReSSD Precip Scalar Script
 % Jack Dechow Chapel Hill January 2026
 % This script generates the precip_scalar.nc file for a given water year.
 % The WY var should be fed to MATLAB from the top level bash script on
@@ -14,6 +14,9 @@ try
 catch
     warning("Water year variable not assigned!")
     WY = input("Please enter requested water year as a string:");
+    if isnumeric(WY)
+        WY = num2str(WY);
+    end
     yearPath = strcat('WY',WY);
 end
 
@@ -21,6 +24,8 @@ end
 xyPath = '/discover/nobackup/projects/coressd/Blender/Inputs';
 inPath = '/discover/nobackup/projects/coressd/Process/aux_data/MeanSCF';
 outPath = '/discover/nobackup/projects/coressd/PrecipScalarFiles';
+
+
 fDir_xy = [xyPath '/' yearPath '/'];
 fDir_i = [inPath '/'];
 fDir_o = [outPath '/' yearPath '/'];
@@ -39,11 +44,11 @@ outFile =   [fDir_o 'precip_scalar.nc'];
 
 % Read DEM
 DEM_file = './aux_data/MODDEM1KM_fixed.tif';
-[tmpDEM,~] = readgeoraster(DEM_file);
-DEM = flip(tmpDEM); clear tmpDEM;
+[tmpDEM,~] = imread(DEM_file);
+DEM = flipud(tmpDEM); clear tmpDEM;
 
 % Read SCF
-avgSCF = flip(readgeoraster(inFile));
+avgSCF = flipud(imread(inFile));
 
 %% 3. Read target grid
 [targetGrid.lat, targetGrid.lon, targetGrid.latName, targetGrid.lonName] = readLatLonStrict(xyFile);
