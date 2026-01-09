@@ -31,6 +31,7 @@ if ~isfile(outFile)
     %% 1 Set options + run functions
     % Chunk size for computeMean function to work over
     dx = 100; dy = dx;
+    disp('Starting Mean Annual SCF Computation now:')
     avgSCF = computeMeanSCF_NA(inFile,dx,dy);
     
     %% 2 Mask ocean
