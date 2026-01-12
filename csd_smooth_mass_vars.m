@@ -53,6 +53,9 @@ keepUInt16    = true;        % true: write back as uint16 with 65535 nodata
 chunkXY       = [1024 512 1];
 deflate       = 4; shuffle       = true;
 
+if exist(outFile, 'file')
+    disp('Out file exists, moving on!')
+else
 %% 1 Inspect input
 infoV = ncinfo(inFile, varName);
 nx = infoV.Size(1); ny = infoV.Size(2); nt = infoV.Size(3);
@@ -183,7 +186,7 @@ end
 fprintf('Done. Output: %s\n', outFile);
 
 end
-
+end
 %% Helper functions
 function copyVarAttrs(inFile, inVar, outFile, outVar)
     try
