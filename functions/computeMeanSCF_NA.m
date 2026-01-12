@@ -28,6 +28,7 @@ function avgSCF = computeMeanSCF_NA(fname,dx,dy)
     nTilesY = ceil(ny / dy);
     nTilesX = ceil(nx / dx);
     
+    disp('Starting Main Loop:')
     % Main Loop
    
     for i = 1:nTilesY
