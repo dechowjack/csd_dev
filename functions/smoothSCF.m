@@ -1,4 +1,7 @@
 function smoothSCF = smoothSCF(SCF,twindow,nt,mode)
+    %% Smooths erratic SCF observations from cloud gaps
+    % If the CoReSSD runs ever are redone, this should probably be replaced with the 
+    % matlab movmean/movmedian functions
     if isa(SCF,'double')
         SCF = single(SCF);
     end
