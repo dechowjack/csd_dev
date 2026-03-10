@@ -108,7 +108,7 @@ for ii = 1:numel(sLL)
         continue % nothing usable in this polygon
     end
 
-    % One tight global window for the polygon (clip to raster)
+    % global window for the polygon (clip to raster)
     cmin = max(floor(xmin), 0.5);
     cmax = min( ceil(xmax), double(nCols)+0.5);
     rmin = max(floor(ymin), 0.5);
@@ -135,7 +135,7 @@ for ii = 1:numel(sLL)
     %tileY = DEM(row1:row2, col1:col2);
  
 
-    % Run your algorithm on masked pixels only
+    % Run algorithm on masked pixels only
     tmpSCF = tileSCF(windowMask);
     tmpDEM = tileDEM(windowMask);
     % Pre algo checks
@@ -216,17 +216,17 @@ dlat = median(diff(ys));
 ys0  = ys(1);
 
 if dlat > 0
-    % south -> north as row increases (uncommon for rasters, but possible)
+    % south -> north as row increases 
     yI = 1 + (lat - ys0) / dlat;
 else
-    % north -> south as row increases (common raster convention)
+    % north -> south as row increases 
     dlat = abs(dlat);
     yI = 1 + (ys0 - lat) / dlat;
 end
 
 xI = 1 + (lon - xs(1)) / dlon;
 
-% optional: clamp a bit to avoid extreme out-of-range numerics
+% clamp a bit to avoid extreme out-of-range numerics
 xI = min(max(xI, 0.5), nCols + 0.5);
 yI = min(max(yI, 0.5), nRows + 0.5);
 end
