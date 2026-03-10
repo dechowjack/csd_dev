@@ -1,6 +1,6 @@
 # csd_dev
 ## 1. Contents
-`Jack Dechow UNC Chapel Hill January 2025`
+`Jack Dechow UNC Chapel Hill January 2026`
 This folder is a (currently private) repo on my GitHub `dechowjack/csd_dev`. This folder contains the following scripts:
 - `csd_main.m`
 - `csd_gen_mean_scf_files.m`
